@@ -1,0 +1,11 @@
+WITH sub1
+AS (SELECT
+  DATEADD(DD, -ROW_NUMBER() OVER (ORDER BY start_date), start_date) AS flag,
+  *
+FROM projects)
+SELECT
+  MIN(start_date),
+  MAX(End_Date)
+FROM sub1
+GROUP BY flag
+ORDER BY DATEDIFF(D, MIN(start_date), MAX(End_Date)) ASC, MIN(start_date)

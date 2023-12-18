@@ -1,0 +1,12 @@
+SELECT DISTINCT tab1.X, tab1.Y 
+FROM ( 
+    -- numbers each pair of x and y
+    SELECT *, ROW_NUMBER() OVER(ORDER BY X) as rn FROM Functions) tab1 
+    -- joins with same numbered x and y table on conditional x1 = y2 and x2 = y1
+    JOIN ( SELECT *, ROW_NUMBER() OVER(ORDER BY X) as rn FROM Functions) tab2 
+        ON tab1.X = tab2.Y 
+        AND tab1.Y = tab2.X 
+        -- use row number to check that you didn't collide pairs (e.g 20,20 pair, dont want to match yourself)
+        AND tab1.rn <> tab2.rn 
+    -- keep only the pair where x1 <= y1 for output
+WHERE tab1.X <= tab2.X

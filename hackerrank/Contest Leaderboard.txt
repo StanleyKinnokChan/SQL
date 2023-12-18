@@ -1,0 +1,12 @@
+SELECT s.hacker_id, h.name, sum(s.sum_score)
+FROM 
+    (
+        select hacker_id, challenge_id, max(score) as sum_score
+        from Submissions
+        group by hacker_id,challenge_id
+    ) s
+JOIN hackers h 
+    on s.hacker_id = h. hacker_id
+group by s.hacker_id, h.name
+having sum(s.sum_score) != 0
+order by sum(s.sum_score) desc, h.hacker_id;

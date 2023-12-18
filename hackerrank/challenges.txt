@@ -1,0 +1,24 @@
+with T1 as (
+    Select 
+        c.hacker_id,
+        name,
+        count(challenge_id) as challenge_count
+    FROM Challenges c
+    JOIN Hackers h
+        on h.hacker_id = c.hacker_id
+    Group by c.hacker_id,name), 
+    
+    T2 as (
+    Select 
+        challenge_count,
+        count(challenge_count) as challenge_count_count
+    FROM T1
+    Group by challenge_count
+    having count(challenge_count)=1)
+    
+select * 
+FROM T1
+where challenge_count = (select max(challenge_count) from T1) OR
+    challenge_count in (select challenge_count from T2)
+order by challenge_count desc, hacker_id
+
